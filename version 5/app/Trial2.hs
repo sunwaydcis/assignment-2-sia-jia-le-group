@@ -112,7 +112,7 @@ main = do
     putStrLn $ show beds_coviddataset
 
 
--- -- -- Code for question 1
+-- -- Question 1
 -- -- Create tuple 2 for each states and their number of beds
 extractTuple :: IO [(String, Integer)]
 extractTuple = do
