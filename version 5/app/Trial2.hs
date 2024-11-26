@@ -141,7 +141,6 @@ question1 = do
     bedsnum <- secondValueofTuple
     putStrLn $ "State with the largest number of beds is: " ++ show state
 
--- -- ------------------------------------------------------Version 1-----------------------------------------
 -- Question 2
 -- Get total bed based on category for a HospitalData record
 data Bed = Beds | BedsCovid | BedsNonCrit 
@@ -170,64 +169,64 @@ question2 = do
     ratio <- bedsRatio
     putStrLn $ "The ratio is: " ++ ratio
 
--- -- Question 3
--- data Category = Suspected | CovidPositive
---     deriving Show
+-- Question 3
+data Category = Suspected | CovidPositive
+    deriving Show
 
--- individualByCategory :: Category -> HospitalDataset -> Integer
--- individualByCategory Suspected record = admitted_pui record
--- individualByCategory CovidPositive record = admitted_covid record
+individualByCategory :: Category -> HospitalDataset -> Integer
+individualByCategory Suspected record = admitted_pui record
+individualByCategory CovidPositive record = admitted_covid record
 
--- createTupleByState :: [HospitalDataset] -> [(String, [HospitalDataset])]
--- createTupleByState list = 
---     map (\group -> (state (head group), group)) $
---         groupBy ((==) `on` state) $ sortOn state list
+createTupleByState :: [HospitalDataset] -> [(String, [HospitalDataset])]
+createTupleByState list = 
+    map (\group -> (state (head group), group)) $
+        groupBy ((==) `on` state) $ sortOn state list
 
--- sumSuspected :: [HospitalDataset] -> Integer
--- sumSuspected sums = sum $ map (individualByCategory Suspected) sums
+sumSuspected :: [HospitalDataset] -> Integer
+sumSuspected sums = sum $ map (individualByCategory Suspected) sums
 
--- computeSuspectedAverage :: [(String, [HospitalDataset])] -> [(String, Double)]
--- computeSuspectedAverage suspectedData =  
---     map computeAverage suspectedData
---   where  
---     computeAverage (st, records) =
---         let count = fromIntegral (length records) :: Double
---             totalSuspected = fromIntegral (sumSuspected records) :: Double
---             average = totalSuspected / count
---         in (st, average)
+computeSuspectedAverage :: [(String, [HospitalDataset])] -> [(String, Double)]
+computeSuspectedAverage suspectedData =  
+    map computeAverage suspectedData
+  where  
+    computeAverage (st, records) =
+        let count = fromIntegral (length records) :: Double
+            totalSuspected = fromIntegral (sumSuspected records) :: Double
+            average = totalSuspected / count
+        in (st, average)
 
--- sumCovid :: [HospitalDataset] -> Integer
--- sumCovid sums = sum $ map (individualByCategory CovidPositive) sums
+sumCovid :: [HospitalDataset] -> Integer
+sumCovid sums = sum $ map (individualByCategory CovidPositive) sums
 
--- computeCovidAverage :: [(String, [HospitalDataset])] -> [(String, Double)]
--- computeCovidAverage covidData =  
---     map computeAverage covidData
---   where  
---     computeAverage (st, records) =
---         let count = fromIntegral (length records) :: Double
---             totalCovid = fromIntegral (sumCovid records) :: Double
---             average = totalCovid / count
---         in (st, average)
+computeCovidAverage :: [(String, [HospitalDataset])] -> [(String, Double)]
+computeCovidAverage covidData =  
+    map computeAverage covidData
+  where  
+    computeAverage (st, records) =
+        let count = fromIntegral (length records) :: Double
+            totalCovid = fromIntegral (sumCovid records) :: Double
+            average = totalCovid / count
+        in (st, average)
 
--- question3 :: IO ()
--- question3  = do
---     result <- readHospitalData "hospital.csv"
---     case result of
---         Left err -> putStrLn $ "Error Parsing CSV: " ++ err
---         Right hospitalData -> do
---             let list = createTupleByState (hospitalData)
---             let suspectedavg = computeSuspectedAverage list
---             let covidavg = computeCovidAverage list
---             putStrLn $ "Average of Suspected individual in each states: "
---             mapM_ (\(st, avg) -> printf "%s: %.2f\n" st avg) suspectedavg
---             putStrLn $ ""
---             putStrLn $ "Average of Individual in Category Covid-19 Positive for each states: "
---             mapM_ (\(st, avg) -> printf "%s: %.2f\n" st avg) covidavg
+question3 :: IO ()
+question3  = do
+    result <- readHospitalData "hospital.csv"
+    case result of
+        Left err -> putStrLn $ "Error Parsing CSV: " ++ err
+        Right hospitalData -> do
+            let list = createTupleByState (hospitalData)
+            let suspectedavg = computeSuspectedAverage list
+            let covidavg = computeCovidAverage list
+            putStrLn $ "Average of Suspected individual in each states: "
+            mapM_ (\(st, avg) -> printf "%s: %.2f\n" st avg) suspectedavg
+            putStrLn $ ""
+            putStrLn $ "Average of Individual in Category Covid-19 Positive for each states: "
+            mapM_ (\(st, avg) -> printf "%s: %.2f\n" st avg) covidavg
 
--- main :: IO ()
--- main = do
---     question1
---     putStrLn $ ""
---     question2
---     putStrLn $ ""
---     question3
+main :: IO ()
+main = do
+    question1
+    putStrLn $ ""
+    question2
+    putStrLn $ ""
+    question3
